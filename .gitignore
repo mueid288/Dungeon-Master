@@ -1,0 +1,40 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Alembic
+alembic/versions/__pycache__/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Docker
+*.log
+
+
+# Misc
+*.swp
+*.swo
+
+# Environment
+.env
+
+# Ignore database
+*.sqlite3
+
+# Ignore other
+*.bak
+*.tmp
+
+# Ignore test outputs
+htmlcov/
+coverage.xml
+
+# Ignore Jupyter
+.ipynb_checkpoints/
