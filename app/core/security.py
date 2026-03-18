@@ -33,7 +33,7 @@ def create_token(user_id: int):
 
     return jwt.encode(payload,SECRETKEY,algorithm=ALGORITHM)
 
-async def verify_token(token: str = Depends(oauth2_scheme)):
+def verify_token(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -41,9 +41,10 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
     )
     try:
         payload = jwt.decode(token, SECRETKEY, algorithms=[ALGORITHM])
-        user_id: str = payload.get("sub")
+        user_id: int = payload.get("sub")
         if user_id is None:
             raise credentials_exception
         return user_id
     except JWTError:
         raise credentials_exception
+    
