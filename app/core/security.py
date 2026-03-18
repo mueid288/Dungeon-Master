@@ -26,6 +26,15 @@ def verify_password(plain: str, hashed: str):
 
 # JWT
 def create_token(user_id: int):
+    """
+    Create a JSON Web Token embedding the given user ID as the token subject and an expiration based on configured settings.
+    
+    Parameters:
+        user_id (int): Identifier to include in the token's `sub` claim.
+    
+    Returns:
+        token (str): Encoded JWT string.
+    """
     payload= {
         "sub": str(user_id),
         "exp": datetime.now(timezone.utc) + timedelta(days=int(EXPIRY))
@@ -34,6 +43,17 @@ def create_token(user_id: int):
     return jwt.encode(payload,SECRETKEY,algorithm=ALGORITHM)
 
 def verify_token(token: str = Depends(oauth2_scheme)):
+    """
+    Validate a Bearer JWT and extract the authenticated user's identifier.
+    
+    Attempts to decode the provided JWT, verifies the presence of the `sub` claim, and returns its value as the user ID.
+    
+    Returns:
+        user_id (int): The `sub` (subject) claim from the token representing the user identifier.
+    
+    Raises:
+        HTTPException: 401 Unauthorized when the token is missing, invalid, expired, or does not contain a `sub` claim.
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

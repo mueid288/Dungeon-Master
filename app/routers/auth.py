@@ -51,6 +51,18 @@ async def login_user(payload: UserLogin,db: Session= Depends(get_db)):
 
 @router.get("/me")
 def me(user_id:int = Depends(verify_token),db: Session= Depends(get_db)):
+    """
+    Retrieve the user record for the authenticated user.
+    
+    Parameters:
+        user_id (int): Authenticated user's id supplied by the `verify_token` dependency.
+    
+    Returns:
+        User or None: The User model instance if found, or `None` if no user exists with the given id.
+    
+    Raises:
+        HTTPException: 404 with detail "User not found" if a database error occurs while fetching the user.
+    """
     try:
      get_user = db.query(User).filter(User.id == user_id).first()
      return get_user
