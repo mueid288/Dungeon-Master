@@ -9,6 +9,9 @@ from app.database import Base
 import app.models.characters
 import app.models.inventory
 import app.models.users
+import app.models.campaign
+import app.models.campaign_players
+import app.models.memory
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

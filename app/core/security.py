@@ -1,10 +1,13 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status, Depends
+from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from jose import jwt, JWTError
 from datetime import datetime, timedelta, timezone
 
 from dotenv import load_dotenv
 import os
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 load_dotenv()
 
@@ -30,17 +33,17 @@ def create_token(user_id: int):
 
     return jwt.encode(payload,SECRETKEY,algorithm=ALGORITHM)
 
-def verify_token(token: str):
+async def verify_token(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
-        status_code=401,
-        detail="Could'nt validate credentials",
-        headers={"WWW-Authenticate":"Bearer"},
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload= jwt.decode(token,SECRETKEY,algorithms=[ALGORITHM])
-        user_id= payload.get("sub")
+        payload = jwt.decode(token, SECRETKEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
         if user_id is None:
             raise credentials_exception
-        return int(user_id)
+        return user_id
     except JWTError:
         raise credentials_exception

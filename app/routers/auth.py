@@ -50,10 +50,9 @@ async def login_user(payload: UserLogin,db: Session= Depends(get_db)):
     
 
 @router.get("/me")
-def me(token: str = Depends(oauth2_scheme),db: Session= Depends(get_db)):
+def me(user_id:int = Depends(verify_token),db: Session= Depends(get_db)):
     try:
-     current_userid = verify_token(token)
-     get_user = db.query(User).filter(User.id == current_userid).first()
+     get_user = db.query(User).filter(User.id == user_id).first()
      return get_user
     except:
         raise HTTPException(status_code=404,detail="User not found")
