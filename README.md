@@ -59,7 +59,7 @@ GROQ_API_KEY="your_groq_api_key_here"
 DATABASE_URL=postgresql://dm_user:dm_pass@localhost:5432/dungeon_master
 SECRET_KEY="your_jwt_secret_key"
 ALGORITHM="HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES=30
+ACCESS_TOKEN_EXPIRE_DAYS=7
 FRONTEND_URL=http://localhost:3000
 ```
 
