@@ -60,6 +60,7 @@ DATABASE_URL=postgresql://dm_user:dm_pass@localhost:5432/dungeon_master
 SECRET_KEY="your_jwt_secret_key"
 ALGORITHM="HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES=30
+FRONTEND_URL=http://localhost:3000
 ```
 
 **5. Run Database Migrations:**
