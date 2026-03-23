@@ -22,6 +22,10 @@ class CampaignResponse(BaseModel):
     name: str
     theme: str
     summary: Optional[str] = None   # starts as None
+    main_quest: Optional[str] = None
+    villain: Optional[str] = None
+    status: Optional[str] = None
+    action_count: Optional[int] = 0
     created_by: int                  # it's a user id, not a name
     created_at: datetime
     players: List[PlayerInCampaign]

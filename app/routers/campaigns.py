@@ -7,6 +7,9 @@ from ..core.security import verify_token
 from ..models.campaign import Campaign
 from ..models.campaign_players import CampaignPlayer
 from ..schemas.campaign import CampaignCreate, CampaignJoin, CampaignResponse, CampaignSummary, PlayerInCampaign
+from ..models.campaign_players import CampaignPlayer
+from ..models.memory import Memory
+from ..models.characters import Character
 
 router = APIRouter(prefix="/campaign",tags=["Campaign"])
 
@@ -68,3 +71,17 @@ def get_campaign(campaign_id:int,user_Id:int=Depends(verify_token),db:Session=De
     if not list_campaign:
         raise HTTPException(status_code=404, detail="Campaign not found")
     return list_campaign
+
+@router.get("/{campaign_id}/export")
+def export_story(campaign_id:int,user_Id:int= Depends(verify_token),db:Session=Depends(get_db)):
+     current_character = db.query(Character).filter(Character.user_id == user_Id).first()
+     current_campaign = db.query(Campaign).join(CampaignPlayer).filter(CampaignPlayer.campaign_id == campaign_id , CampaignPlayer.user_id == user_Id).first()
+
+    #  if current_campaign.status != "Active":
+    #       raise HTTPException(status_code=400,detail=f"Game already ended — status: {current_campaign.status}")
+     
+     memories = db.query(Memory).filter(Memory.campaign_id == current_campaign.id).all()
+
+    #  return current_character
+     #return current_campaign
+     return memories
