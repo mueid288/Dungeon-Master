@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dungeon Master - AI RPG</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="noise-overlay"></div>
+
+    <!-- Auth Screen -->
+    <div id="auth-screen" class="screen active">
+        <div class="glass-panel">
+            <h1 class="logo">Dungeon Master</h1>
+            <p class="subtitle">Enter the realm of shadows</p>
+            <form id="auth-form">
+                <input type="email" id="email" placeholder="Email Address" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <div class="auth-buttons">
+                    <button type="submit" id="login-btn" class="btn primary">Login</button>
+                    <button type="button" id="signup-btn" class="btn secondary">Create Account</button>
+                </div>
+            </form>
+            <div id="auth-error" class="error-msg"></div>
+        </div>
+    </div>
+
+    <!-- Lobby Screen -->
+    <div id="lobby-screen" class="screen">
+        <div class="container">
+            <header>
+                <h2 class="logo-small">Dungeon Master</h2>
+                <button id="logout-btn" class="btn text-btn">Flee Realm (Logout)</button>
+            </header>
+
+            <div class="grid-2">
+                <!-- Character Section -->
+                <div class="glass-panel">
+                    <h3>Your Character</h3>
+                    <div id="char-details" class="hidden">
+                        <h4 id="char-name" class="gold-text"></h4>
+                        <p class="mono">Class: <span id="char-class"></span> | Level: <span id="char-level"></span></p>
+                        <p class="mono">HP: <span id="char-hp"></span> | XP: <span id="char-xp"></span></p>
+                    </div>
+                    <form id="create-char-form" class="hidden compact-form">
+                        <input type="text" id="new-char-name" placeholder="Character Name" required>
+                        <select id="new-char-class">
+                            <option value="Warrior">Warrior</option>
+                            <option value="Mage">Mage</option>
+                            <option value="Rogue">Rogue</option>
+                        </select>
+                        <button type="submit" class="btn primary">Forge Soul</button>
+                    </form>
+                </div>
+
+                <!-- Campaigns Section -->
+                <div class="glass-panel">
+                    <h3>Campaigns</h3>
+                    <ul id="campaign-list" class="styled-list"></ul>
+                    
+                    <div class="campaign-actions">
+                        <button id="show-create-campaign" class="btn primary">New Campaign</button>
+                        <button id="show-join-campaign" class="btn secondary">Join Campaign</button>
+                    </div>
+
+                    <!-- Hidden sub-forms -->
+                    <form id="create-campaign-form" class="hidden compact-form mt-1">
+                        <input type="text" id="camp-name" placeholder="Campaign Name" required>
+                        <input type="text" id="camp-theme" placeholder="Theme (e.g., Dark Fantasy, Sci-Fi)" required>
+                        <button type="submit" class="btn primary">Create</button>
+                    </form>
+                    <form id="join-campaign-form" class="hidden compact-form mt-1">
+                        <input type="number" id="join-camp-id" placeholder="Campaign ID" required>
+                        <button type="submit" class="btn primary">Join</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gameplay Screen -->
+    <div id="game-screen" class="screen layout-game">
+        <!-- Main Narrative Area -->
+        <div class="narrative-section">
+            <div id="story-log" class="story-container">
+                <div class="system-msg">The story unfolds...</div>
+            </div>
+            
+            <div class="input-area">
+                <div id="dice-result" class="hidden">🎲 <span id="roll-value"></span></div>
+                <div id="quick-options" class="quick-options hidden"></div>
+                <form id="action-form">
+                    <input type="text" id="player-action" placeholder="What do you do next? (e.g. Draw my sword and attack)" required autocomplete="off">
+                    <button type="submit" id="send-action-btn" class="btn action-btn">ACT</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sidebar Stats -->
+        <div class="stats-sidebar glass-panel">
+            <button id="leave-game-btn" class="btn text-btn btn-sm mb-1">&larr; Leave Table</button>
+            <h3 id="game-char-name" class="gold-text">Name</h3>
+            
+            <div class="stat-block">
+                <label>Health</label>
+                <div class="progress-bar">
+                    <div id="health-bar-fill" class="progress fill-hp"></div>
+                </div>
+                <span id="game-char-hp" class="mono text-sm">100/100</span>
+            </div>
+
+            <div class="stat-block">
+                <label>Experience (Level <span id="game-char-level">1</span>)</label>
+                <div class="progress-bar">
+                    <div id="xp-bar-fill" class="progress fill-xp"></div>
+                </div>
+                <span id="game-char-xp" class="mono text-sm">0/100</span>
+            </div>
+
+            <div class="mt-2">
+                <h4 class="sub-heading">Inventory</h4>
+                <ul id="inventory-list" class="mono text-sm no-bullets">
+                    <!-- Populated by JS -->
+                </ul>
+            </div>
+            
+            <div class="mt-2 text-sm italic opacity-70">
+                Campaign: <span id="active-camp-name"></span>
+            </div>
+            
+            <div id="campaign-extra-info" class="mt-1 hidden">
+                <div class="stat-block">
+                    <label>Main Quest</label>
+                    <div id="camp-main-quest" class="text-sm gold-text font-serif"></div>
+                </div>
+                <div class="stat-block">
+                    <label>Villain</label>
+                    <div id="camp-villain" class="text-sm crimson-text font-serif"></div>
+                </div>
+                <div class="stat-block">
+                    <label>Status</label>
+                    <div id="camp-status" class="mono text-sm uppercase"></div>
+                </div>
+                <div class="stat-block">
+                    <label>Action Count</label>
+                    <div id="camp-action-count" class="mono text-sm">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

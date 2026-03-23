@@ -14,3 +14,7 @@ class Campaign(Base):
     created_at = Column(DateTime, default= lambda:datetime.now(timezone.utc))
     players = relationship("CampaignPlayer", back_populates="campaign")
     memories = relationship("Memory", back_populates="campaign")
+    main_quest   = Column(String)    # generated at start
+    villain      = Column(String)    # the big bad guy
+    action_count = Column(Integer, default=0)
+    status       = Column(String, default="active")
